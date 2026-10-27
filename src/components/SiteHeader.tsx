@@ -51,7 +51,7 @@ function HeaderLinks({ current, signedIn }: { current: Section; signedIn: boolea
     <nav aria-label="Main navigation">
       <a href={current === "home" ? "#practice" : "/#practice"}>Practice</a>
       <a href="/lessons" aria-current={current === "lessons" ? "page" : undefined}>Typing lessons</a>
-      <a href="/game" aria-current={current === "game" ? "page" : undefined}>Word Rush</a>
+      <a href="/game" aria-current={current === "game" ? "page" : undefined}>Typing games</a>
       <a href="/progress" aria-current={current === "progress" ? "page" : undefined}>My progress</a>
       <a href="/guides" aria-current={current === "guides" ? "page" : undefined}>Typing guides</a>
       <a href="/about">About</a>

@@ -31,9 +31,16 @@ The long test prompt renders a small moving window of characters so timer update
 
 Open `/lessons` for four guided exercises: home row, top row, bottom row, and complete sentences. Each exercise shows character feedback, accuracy, and progress. A lesson is complete when every character matches the prompt; completion is stored on this device.
 
-## Word Rush game
+## Typing games
 
-Open `/game` to play a 60-second falling-word typing round. Type a word exactly to clear it; no Enter key is needed. Each cleared word earns points, consecutive clears add a combo bonus, and three missed words end the round. The game pauses when the browser tab is hidden. The high score is saved in this browser's local storage and is separate from timed typing-test results.
+Open `/game` and choose one of four games:
+
+- **Word Rush:** clear falling words during a 60-second round. Three misses end the game.
+- **Speed Sprint:** type as many exact words as possible in 30 seconds. Words clear without Enter.
+- **Precision Quest:** submit 12 exact words. Wrong answers cost one of three lives.
+- **Memory Flash:** see each of eight words for 2.5 seconds, then type it from memory. Wrong answers cost a life.
+
+Each game awards word and combo points, pauses when the tab is hidden, and saves its own high score in browser local storage. Game scores are separate from timed typing-test results.
 
 ## Progress dashboard
 
