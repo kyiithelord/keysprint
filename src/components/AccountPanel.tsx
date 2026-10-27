@@ -89,6 +89,24 @@ export default function AccountPanel() {
     setBusy(false);
   }
 
+  async function resendConfirmation() {
+    const client = getAuthClient();
+    if (!client) return;
+    if (!email.trim()) {
+      setErrorMessage("Enter your email address first.");
+      return;
+    }
+    setBusy(true); setMessage(""); setErrorMessage("");
+    const { error } = await client.auth.resend({
+      type: "signup",
+      email: email.trim(),
+      options: { emailRedirectTo: `${window.location.origin}/account` },
+    });
+    if (error) setErrorMessage(error.message);
+    else setMessage("If this email is awaiting confirmation, a new link will arrive in its inbox.");
+    setBusy(false);
+  }
+
   if (!authConfigured) return <div className="account-card account-unavailable"><p className="eyebrow">ACCOUNT SETUP</p><h2>Coming soon.</h2><p>Email accounts will be available after the authentication service is connected. Typing tests and lessons still work without an account.</p><a className="button primary" href="/#practice">Practice without an account →</a></div>;
 
   return <div className="account-card">
@@ -105,6 +123,7 @@ export default function AccountPanel() {
         {mode === "sign-in" && <button className="account-forgot" type="button" onClick={() => changeMode("forgot")}>Forgot password?</button>}
         <button className="button primary account-submit" type="submit" disabled={busy}>{busy ? "Please wait…" : mode === "sign-up" ? "Create account →" : mode === "forgot" ? "Send reset link →" : mode === "reset" ? "Update password →" : "Sign in →"}</button>
       </form>
+      {(mode === "sign-in" || mode === "sign-up") && <button className="account-forgot" type="button" onClick={resendConfirmation} disabled={busy}>Resend confirmation email</button>}
       <p className="account-small">Creating an account is optional. Your existing local progress will stay on this device and will not sync to your account yet.</p>
     </>}
   </div>;
