@@ -13,6 +13,8 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+Run the scoring checks with `npm test`, and verify the production build with `npm run build`.
+
 ## Scoring rules
 
 - The timer starts with the first typed character and ends at the selected duration.
@@ -23,10 +25,20 @@ Open `http://localhost:3000`.
 - Empty input has 0 WPM and displays 100% accuracy because no keystrokes have been evaluated.
 - Results and personal bests are saved in browser local storage. Best scores are compared within the same duration, difficulty, and mode.
 
+The long test prompt renders a small moving window of characters so timer updates do not redraw the full passage. On mobile, changing test settings resets the test without opening the on-screen keyboard.
+
 ## Beginner lessons
 
 Open `/lessons` for four guided exercises: home row, top row, bottom row, and complete sentences. Each exercise shows character feedback, accuracy, and progress. A lesson is complete when every character matches the prompt; completion is stored on this device.
 
+## Progress dashboard
+
+Open `/progress` to review saved tests. Filter by duration, difficulty, and mode; compare daily average net WPM and accuracy in the chart; and see your personal best, average accuracy, and result history. Up to 100 recent tests are kept in browser local storage. Results do not sync between devices.
+
+## Typing guides
+
+Open `/guides` for practical articles about typing speed, accuracy, and common mistakes. Each guide links to a relevant lesson, timed test, or progress view.
+
 ## Launch gaps
 
-This is an initial typing engine, homepage, and beginner lesson set, not a public launch. The BRD's legal pages, contact details, SEO sitemap and robots file, consent handling, deployment, and AdSense integration remain to be completed. Advertising should be connected only after approval.
+This is an initial typing engine, homepage, beginner lesson set, local progress dashboard, and guide library, not a public launch. The BRD's legal pages, contact details, SEO sitemap and robots file, consent handling, deployment, and AdSense integration remain to be completed. Advertising should be connected only after approval.

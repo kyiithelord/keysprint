@@ -55,7 +55,13 @@ const STORAGE_KEY = "keysprint-results-v1";
 export function readResults(): SavedResult[] {
   try {
     const value = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-    return Array.isArray(value) ? value.filter((entry): entry is SavedResult => typeof entry?.netWpm === "number" && typeof entry?.duration === "number") : [];
+    return Array.isArray(value) ? value.filter((entry): entry is SavedResult =>
+      typeof entry?.netWpm === "number" && Number.isFinite(entry.netWpm) &&
+      typeof entry?.rawWpm === "number" && typeof entry?.accuracy === "number" &&
+      [15, 30, 60, 120].includes(entry.duration) &&
+      ["easy", "standard", "advanced"].includes(entry.difficulty) &&
+      ["words", "sentences"].includes(entry.mode) &&
+      typeof entry.finishedAt === "string") : [];
   } catch {
     return [];
   }
@@ -63,7 +69,7 @@ export function readResults(): SavedResult[] {
 
 export function saveResult(result: SavedResult): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([result, ...readResults()].slice(0, 20)));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([result, ...readResults()].slice(0, 100)));
   } catch {
     // Typing remains usable when storage is unavailable.
   }
