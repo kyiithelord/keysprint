@@ -1,3 +1,5 @@
+import ArcadeTypingPreview from "@/components/ArcadeTypingPreview";
+
 export function LessonsArtwork() {
   return <div className="section-art lesson-art" aria-label="Home row typing lesson preview">
     <div className="art-topline"><span>01 / 04 · HOME ROW</span><span>START HERE ↗</span></div>
@@ -12,7 +14,7 @@ export function GamesArtwork() {
     <div className="arcade-art-header"><span className="arcade-art-icon">K<span>↗</span></span><div><strong>WORD RUSH</strong><small>KEYSPRINT / ARCADE 01</small></div><span className="arcade-art-live"><i /> GAME PREVIEW</span></div>
     <div className="arcade-art-hud"><span>TIME <strong>00:42</strong></span><span>SCORE <strong>1,240</strong></span><span>STREAK <strong>× 04</strong></span></div>
     <div className="arcade-art-field"><span className="arcade-art-line" /><span className="arcade-art-word word-one">rhythm</span><span className="arcade-art-word word-two">focus</span><span className="arcade-art-word word-three">speed</span><span className="arcade-art-target">TYPE BEFORE THEY FALL ↗</span></div>
-    <div className="arcade-art-console"><span className="arcade-art-typing">rhyt<span>▍</span></span><span className="arcade-art-enter">ENTER ↵</span></div>
+    <div className="arcade-art-console"><ArcadeTypingPreview /><span className="arcade-art-enter">ENTER ↵</span></div>
   </div>;
 }
 
