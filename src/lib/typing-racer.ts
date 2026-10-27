@@ -8,6 +8,8 @@ export const NITRO_SECONDS = 3;
 export type RaceStatus = "ready" | "running" | "paused" | "finished";
 export type RaceState = {
   status: RaceStatus;
+  words: string[];
+  lastFirstWord: string | null;
   wordIndex: number;
   input: string;
   score: number;
@@ -21,16 +23,33 @@ export type RaceState = {
   winner: "player" | "ghost" | null;
 };
 
-export function raceWord(index: number): string {
-  return GAME_WORDS[(index * 5 + Math.floor(index / 4) + 3) % GAME_WORDS.length];
+export function raceWord(state: RaceState, index: number): string {
+  return state.words[index] ?? GAME_WORDS[index % GAME_WORDS.length];
 }
 
-export function newRace(): RaceState {
-  return { status: "ready", wordIndex: 0, input: "", score: 0, combo: 0, bestCombo: 0, mistakes: 0, elapsed: 0, ghostProgress: 0, nitroCharges: 0, nitroRemaining: 0, winner: null };
+export function newRace(lastFirstWord: string | null = null): RaceState {
+  return { status: "ready", words: [], lastFirstWord, wordIndex: 0, input: "", score: 0, combo: 0, bestCombo: 0, mistakes: 0, elapsed: 0, ghostProgress: 0, nitroCharges: 0, nitroRemaining: 0, winner: null };
 }
 
-export function startRace(state: RaceState): RaceState {
-  return state.status === "paused" ? { ...state, status: "running" } : { ...newRace(), status: "running" };
+export function createRaceWords(seed: number, avoidFirst: string | null = null): string[] {
+  const words = [...GAME_WORDS];
+  let value = seed >>> 0;
+  for (let index = words.length - 1; index > 0; index--) {
+    value = (Math.imul(value, 1664525) + 1013904223) >>> 0;
+    const swapIndex = value % (index + 1);
+    [words[index], words[swapIndex]] = [words[swapIndex], words[index]];
+  }
+  if (words[0] === avoidFirst) {
+    const swapIndex = words.findIndex(word => word !== avoidFirst);
+    [words[0], words[swapIndex]] = [words[swapIndex], words[0]];
+  }
+  return words;
+}
+
+export function startRace(state: RaceState, seed = 0): RaceState {
+  if (state.status === "paused") return { ...state, status: "running" };
+  const words = createRaceWords(seed, state.lastFirstWord);
+  return { ...newRace(words[0]), status: "running", words };
 }
 
 export function tickRace(state: RaceState, seconds: number): RaceState {
@@ -45,7 +64,7 @@ export function tickRace(state: RaceState, seconds: number): RaceState {
 export function typeRace(state: RaceState, value: string): RaceState {
   if (state.status !== "running") return state;
   const input = value.toLowerCase().replace(/[^a-z]/g, "").slice(0, 20);
-  const target = raceWord(state.wordIndex);
+  const target = raceWord(state, state.wordIndex);
   const mistakes = state.mistakes + Number(input.length > state.input.length && !target.startsWith(input));
   if (input !== target) return { ...state, input, mistakes };
   const wordIndex = state.wordIndex + 1;
@@ -71,7 +90,7 @@ export function useNitro(state: RaceState): RaceState {
 }
 
 export type RaceAction =
-  | { type: "start" }
+  | { type: "start"; seed: number }
   | { type: "pause" }
   | { type: "reset" }
   | { type: "tick"; seconds: number }
@@ -80,9 +99,9 @@ export type RaceAction =
 
 export function raceReducer(state: RaceState, action: RaceAction): RaceState {
   switch (action.type) {
-    case "start": return startRace(state);
+    case "start": return startRace(state, action.seed);
     case "pause": return state.status === "running" ? { ...state, status: "paused" } : state;
-    case "reset": return newRace();
+    case "reset": return newRace(state.lastFirstWord);
     case "tick": return tickRace(state, action.seconds);
     case "type": return typeRace(state, action.value);
     case "nitro": return useNitro(state);

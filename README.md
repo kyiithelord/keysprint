@@ -39,7 +39,7 @@ Open `/game` and choose one of five games:
 - **Speed Sprint:** type as many exact words as possible in 30 seconds. Words clear without Enter.
 - **Precision Quest:** submit 12 exact words. Wrong answers cost one of three lives.
 - **Memory Flash:** see each of eight words for 2.5 seconds, then type it from memory. Wrong answers cost a life.
-- **Typing Racer:** clear 24 words before a moving ghost reaches the finish. Every four-word streak earns a Nitro charge that freezes the ghost for three seconds.
+- **Typing Racer:** clear 24 words before a moving ghost reaches the finish. Every four-word streak earns a Nitro charge that freezes the ghost for three seconds. Each new race reshuffles the words and starts with a different word from the previous race.
 
 Each game awards word and combo points, pauses when the tab is hidden, and saves its own high score in browser local storage. Game scores are separate from timed typing-test results.
 

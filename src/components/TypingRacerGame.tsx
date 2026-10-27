@@ -9,7 +9,7 @@ export default function TypingRacerGame() {
   const [race, dispatch] = useReducer(raceReducer, undefined, newRace);
   const [best, setBest] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
-  const target = raceWord(race.wordIndex);
+  const target = raceWord(race, race.wordIndex);
   const playerProgress = Math.min(1, (race.wordIndex + (race.input && target.startsWith(race.input) ? race.input.length / target.length : 0)) / RACE_WORD_COUNT);
   const validPrefix = target.startsWith(race.input);
   const secondsLeft = Math.ceil(RACE_TIME_LIMIT - race.elapsed);
@@ -42,7 +42,7 @@ export default function TypingRacerGame() {
   }, [race.status, race.score, best]);
 
   function play() {
-    dispatch({ type: "start" });
+    dispatch({ type: "start", seed: Math.floor(Math.random() * 0x100000000) });
     window.requestAnimationFrame(() => inputRef.current?.focus());
   }
 
@@ -61,6 +61,6 @@ export default function TypingRacerGame() {
       <div className="racer-track-foot"><span>START / 00</span><span>CHECKPOINTS · 25% / 50% / 75%</span><span>FINISH / {RACE_WORD_COUNT}</span></div>
       {race.status !== "running" && <div className="racer-overlay"><div className="racer-overlay-content"><span className="racer-overlay-kicker">{race.status === "finished" ? race.winner === "player" ? "YOU WON THE RACE" : "THE GHOST WON THIS ROUND" : race.status === "paused" ? "RACE PAUSED" : "NEW GAME / NIGHT CIRCUIT"}</span><h2>{race.status === "finished" ? race.winner === "player" ? <>You beat<br /><em>the ghost.</em></> : <>The finish is<br /><em>still ahead.</em></> : race.status === "paused" ? <>Back on<br /><em>the track?</em></> : <>Race your<br /><em>own rhythm.</em></>}</h2><p>{race.status === "finished" ? `${race.wordIndex}/${RACE_WORD_COUNT} words · ${race.bestCombo} best combo · ${race.mistakes} mistakes · ${race.score.toLocaleString()} points` : race.status === "paused" ? "Your progress is saved until you resume." : "Clear 24 words before the ghost reaches the finish. Every four-word streak earns a Nitro charge that freezes the ghost for three seconds."}</p><button type="button" onClick={play}>{race.status === "paused" ? "Resume race ↗" : race.status === "finished" ? "Race again ↗" : "Start racing ↗"}</button></div></div>}
     </div>
-    <div className="racer-console"><div className="racer-input-wrap"><label htmlFor="racer-input">RACE INPUT / TYPE THE HIGHLIGHTED WORD</label><input ref={inputRef} id="racer-input" type="text" inputMode="text" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false} disabled={race.status !== "running"} value={race.input} onChange={event => dispatch({ type: "type", value: event.target.value })} placeholder={race.status === "running" ? "Type here to accelerate…" : "Press Start racing to begin"} /><span>Next up: {race.status === "running" ? [1, 2, 3].map(step => raceWord(race.wordIndex + step)).join("  ·  ") : "Stay sharp. Stay fast."}</span></div><div className="racer-console-actions"><button type="button" className={`racer-nitro${race.nitroRemaining > 0 ? " is-active" : ""}`} onClick={() => dispatch({ type: "nitro" })} disabled={race.status !== "running" || race.nitroCharges === 0 || race.nitroRemaining > 0}><span>✦ NITRO BOOST</span><strong>{race.nitroRemaining > 0 ? "ACTIVE" : `${race.nitroCharges} / 2`}</strong></button><div className="racer-secondary-actions">{race.status === "running" && <button type="button" onClick={() => dispatch({ type: "pause" })}>Pause Ⅱ</button>}{(race.status === "paused" || race.status === "finished") && <button type="button" onClick={() => dispatch({ type: "reset" })}>New race ↻</button>}</div></div></div>
+    <div className="racer-console"><div className="racer-input-wrap"><label htmlFor="racer-input">RACE INPUT / TYPE THE HIGHLIGHTED WORD</label><input ref={inputRef} id="racer-input" type="text" inputMode="text" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false} disabled={race.status !== "running"} value={race.input} onChange={event => dispatch({ type: "type", value: event.target.value })} placeholder={race.status === "running" ? "Type here to accelerate…" : "Press Start racing to begin"} /><span>Next up: {race.status === "running" ? [1, 2, 3].filter(step => race.wordIndex + step < RACE_WORD_COUNT).map(step => raceWord(race, race.wordIndex + step)).join("  ·  ") || "Finish line ahead!" : "Stay sharp. Stay fast."}</span></div><div className="racer-console-actions"><button type="button" className={`racer-nitro${race.nitroRemaining > 0 ? " is-active" : ""}`} onClick={() => dispatch({ type: "nitro" })} disabled={race.status !== "running" || race.nitroCharges === 0 || race.nitroRemaining > 0}><span>✦ NITRO BOOST</span><strong>{race.nitroRemaining > 0 ? "ACTIVE" : `${race.nitroCharges} / 2`}</strong></button><div className="racer-secondary-actions">{race.status === "running" && <button type="button" onClick={() => dispatch({ type: "pause" })}>Pause Ⅱ</button>}{(race.status === "paused" || race.status === "finished") && <button type="button" onClick={() => dispatch({ type: "reset" })}>New race ↻</button>}</div></div></div>
   </section>;
 }
