@@ -33,12 +33,13 @@ Open `/lessons` for four guided exercises: home row, top row, bottom row, and co
 
 ## Typing games
 
-Open `/game` and choose one of four games:
+Open `/game` and choose one of five games:
 
 - **Word Rush:** clear falling words during a 60-second round. Three misses end the game.
 - **Speed Sprint:** type as many exact words as possible in 30 seconds. Words clear without Enter.
 - **Precision Quest:** submit 12 exact words. Wrong answers cost one of three lives.
 - **Memory Flash:** see each of eight words for 2.5 seconds, then type it from memory. Wrong answers cost a life.
+- **Typing Racer:** clear 24 words before a moving ghost reaches the finish. Every four-word streak earns a Nitro charge that freezes the ghost for three seconds.
 
 Each game awards word and combo points, pauses when the tab is hidden, and saves its own high score in browser local storage. Game scores are separate from timed typing-test results.
 
