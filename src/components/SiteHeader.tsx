@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { authConfigured } from "@/lib/auth-config";
 
-type Section = "home" | "lessons" | "progress" | "guides" | "info";
+type Section = "home" | "lessons" | "progress" | "guides" | "info" | "account";
 
 export default function SiteHeader({ current }: { current: Section }) {
   const normalRef = useRef<HTMLElement>(null);
@@ -38,6 +39,7 @@ function HeaderLinks({ current }: { current: Section }) {
       <a href="/progress" aria-current={current === "progress" ? "page" : undefined}>My progress</a>
       <a href="/guides" aria-current={current === "guides" ? "page" : undefined}>Typing guides</a>
       <a href="/about">About</a>
+      {authConfigured && <a href="/account" aria-current={current === "account" ? "page" : undefined}>Account</a>}
     </nav>
   </>;
 }
