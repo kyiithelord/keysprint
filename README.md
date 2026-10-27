@@ -43,6 +43,16 @@ Open `/guides` for practical articles about typing speed, accuracy, and common m
 
 The `/about`, `/contact`, `/privacy`, and `/terms` pages explain the current product and link from every footer. No public contact email is listed yet, as requested. Before public launch, add a real contact method and operator country; if using email, copy `.env.example` to `.env.local` and set the address there. The privacy page also needs the chosen hosting provider and its relevant technical-data practices added after deployment is decided. Review the policies whenever ads or analytics are introduced.
 
+## Optional email accounts
+
+`/account` supports email/password sign-up, email confirmation, sign-in, password reset, and sign-out through Supabase Auth. The form stays unavailable and the Account navigation link stays hidden until Supabase is configured. Typing tests remain account-free, and local progress does **not** sync to accounts.
+
+1. Create a Supabase project and copy its Project URL and **publishable key**. Never use a service-role or secret key in `NEXT_PUBLIC_` variables.
+2. In Supabase Authentication settings, keep the Email provider and email confirmation enabled. Under URL Configuration, set the Site URL to your final production URL and add exact redirect URLs for `https://your-domain/account` and `http://localhost:3000/account` (and any preview URL you intend to test).
+3. Copy `.env.example` to `.env.local` and set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Add the same two variables in Vercel Project Settings → Environment Variables, then redeploy.
+4. Test sign-up, confirmation email, sign-in, password reset, and sign-out on the deployed URL. Configure a production SMTP provider in Supabase before opening registration to the public; the default email sender is for limited testing.
+5. Before enabling accounts publicly, update the privacy policy with the final operator, hosting, support, retention, and account deletion process.
+
 ## Launch gaps
 
-This is an initial typing engine, homepage, beginner lesson set, local progress dashboard, guide library, and draft company and policy pages, not a public launch. A real contact method, hosting details, SEO sitemap and robots file, consent handling, deployment, and AdSense integration remain to be completed. Advertising should be connected only after approval.
+This is an initial typing engine, homepage, beginner lesson set, local progress dashboard, guide library, optional auth integration, and draft company and policy pages, not a public launch. A real contact method, hosting and account-deletion details, SEO sitemap and robots file, consent handling, and AdSense integration remain to be completed. Advertising should be connected only after approval.
