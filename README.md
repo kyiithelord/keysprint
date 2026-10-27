@@ -31,6 +31,10 @@ The long test prompt renders a small moving window of characters so timer update
 
 Open `/lessons` for four guided exercises: home row, top row, bottom row, and complete sentences. Each exercise shows character feedback, accuracy, and progress. A lesson is complete when every character matches the prompt; completion is stored on this device.
 
+## Word Rush game
+
+Open `/game` to play a 60-second falling-word typing round. Type a word exactly to clear it; no Enter key is needed. Each cleared word earns points, consecutive clears add a combo bonus, and three missed words end the round. The game pauses when the browser tab is hidden. The high score is saved in this browser's local storage and is separate from timed typing-test results.
+
 ## Progress dashboard
 
 Open `/progress` to review saved tests. Filter by duration, difficulty, and mode; compare daily average net WPM and accuracy in the chart; and see your personal best, average accuracy, and result history. Up to 100 recent tests are kept in browser local storage. Results do not sync between devices.

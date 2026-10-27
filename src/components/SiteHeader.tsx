@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { authConfigured } from "@/lib/auth-config";
 import { getAuthClient } from "@/lib/auth";
 
-type Section = "home" | "lessons" | "progress" | "guides" | "info" | "account";
+type Section = "home" | "lessons" | "game" | "progress" | "guides" | "info" | "account";
 
 export default function SiteHeader({ current }: { current: Section }) {
   const normalRef = useRef<HTMLElement>(null);
@@ -51,6 +51,7 @@ function HeaderLinks({ current, signedIn }: { current: Section; signedIn: boolea
     <nav aria-label="Main navigation">
       <a href={current === "home" ? "#practice" : "/#practice"}>Practice</a>
       <a href="/lessons" aria-current={current === "lessons" ? "page" : undefined}>Typing lessons</a>
+      <a href="/game" aria-current={current === "game" ? "page" : undefined}>Word Rush</a>
       <a href="/progress" aria-current={current === "progress" ? "page" : undefined}>My progress</a>
       <a href="/guides" aria-current={current === "guides" ? "page" : undefined}>Typing guides</a>
       <a href="/about">About</a>
