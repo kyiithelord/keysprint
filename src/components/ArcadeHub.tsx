@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import WordRushGame from "./WordRushGame";
 import ArcadeChallenge from "./ArcadeChallenge";
 import TypingRacerGame from "./TypingRacerGame";
@@ -20,8 +20,17 @@ export default function ArcadeHub() {
   const [selected, setSelected] = useState<ArcadeMode>("rush");
   const active = games.find(game => game.id === selected)!;
 
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get("mode");
+    if (games.some(game => game.id === requested)) {
+      setSelected(requested as ArcadeMode);
+      window.requestAnimationFrame(() => document.getElementById("play-game")?.scrollIntoView({ block: "start" }));
+    }
+  }, []);
+
   function choose(id: ArcadeMode) {
     setSelected(id);
+    window.history.replaceState(null, "", `/game?mode=${id}`);
     window.requestAnimationFrame(() => document.getElementById("play-game")?.scrollIntoView({ behavior: "smooth", block: "start" }));
   }
 

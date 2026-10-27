@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { lessons } from "@/lib/lessons";
+import { recordDailyActivity } from "@/lib/daily-challenge";
 
 export default function LessonsPractice() {
   const [selected, setSelected] = useState(0);
@@ -18,6 +19,15 @@ export default function LessonsPractice() {
   const done = typed.length === target.length && correct === target.length;
 
   useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get("lesson");
+    const index = lessons.findIndex(item => item.id === requested);
+    if (index >= 0) {
+      setSelected(index);
+      window.requestAnimationFrame(() => document.querySelector(".lesson-workspace")?.scrollIntoView({ block: "start" }));
+    }
+  }, []);
+
+  useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem("keysprint-lessons-v1") || "[]");
       if (Array.isArray(saved)) setCompleted(saved.filter((id): id is string => typeof id === "string"));
@@ -25,7 +35,9 @@ export default function LessonsPractice() {
   }, []);
 
   useEffect(() => {
-    if (!done || completed.includes(lesson.id)) return;
+    if (!done) return;
+    recordDailyActivity({ kind: "lesson", lessonId: lesson.id });
+    if (completed.includes(lesson.id)) return;
     const next = [...completed, lesson.id];
     setCompleted(next);
     try { localStorage.setItem("keysprint-lessons-v1", JSON.stringify(next)); }

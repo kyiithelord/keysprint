@@ -2,6 +2,7 @@
 
 import { useEffect, useReducer, useRef, useState } from "react";
 import { GAME_DURATION, GAME_LIVES, gameReducer, newGame } from "@/lib/word-game";
+import { recordDailyActivity } from "@/lib/daily-challenge";
 
 const BEST_KEY = "keysprint-word-rush-best-v1";
 
@@ -36,6 +37,10 @@ export default function WordRushGame() {
     setBest(game.score);
     try { localStorage.setItem(BEST_KEY, String(game.score)); } catch { /* Keep the score for this visit. */ }
   }, [game.status, game.score, best]);
+
+  useEffect(() => {
+    if (game.status === "finished") recordDailyActivity({ kind: "game", gameId: "rush", score: game.score });
+  }, [game.status, game.score]);
 
   function play() {
     dispatch({ type: "start" });

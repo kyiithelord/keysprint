@@ -2,6 +2,7 @@
 
 import { useEffect, useReducer, useRef, useState } from "react";
 import { GHOST_FINISH_SECONDS, RACE_TIME_LIMIT, RACE_WORD_COUNT, newRace, raceReducer, raceWord } from "@/lib/typing-racer";
+import { recordDailyActivity } from "@/lib/daily-challenge";
 
 const BEST_KEY = "keysprint-typing-racer-best-v1";
 
@@ -40,6 +41,10 @@ export default function TypingRacerGame() {
     setBest(race.score);
     try { localStorage.setItem(BEST_KEY, String(race.score)); } catch { /* Keep the score for this visit. */ }
   }, [race.status, race.score, best]);
+
+  useEffect(() => {
+    if (race.status === "finished") recordDailyActivity({ kind: "game", gameId: "racer", score: race.score });
+  }, [race.status, race.score]);
 
   function play() {
     dispatch({ type: "start", seed: Math.floor(Math.random() * 0x100000000) });

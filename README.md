@@ -43,6 +43,10 @@ Open `/game` and choose one of five games:
 
 Each game awards word and combo points, pauses when the tab is hidden, and saves its own high score in browser local storage. Game scores are separate from timed typing-test results.
 
+## Daily challenge
+
+Open `/daily` for a new local-date challenge: finish the day's specified timed test, repeat its assigned lesson, and complete its assigned game with a score. Each completed day adds to your practice streak; the page shows a weekly calendar and streak milestones. Daily activity and game bests remain in browser local storage and can be cleared from `/privacy`. Accounts do not sync them between devices.
+
 ## Progress dashboard
 
 Open `/progress` to review saved tests. Filter by duration, difficulty, and mode; compare daily average net WPM and accuracy in the chart; and see your personal best, average accuracy, and result history. Up to 100 recent tests are kept in browser local storage. Results do not sync between devices.

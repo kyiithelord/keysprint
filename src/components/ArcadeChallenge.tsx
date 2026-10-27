@@ -2,6 +2,7 @@
 
 import { useEffect, useReducer, useRef, useState, type FormEvent } from "react";
 import { CHALLENGE_LIVES, MEMORY_ROUNDS, PRECISION_ROUNDS, SPRINT_DURATION, challengeReducer, challengeWord, newChallenge, type ChallengeMode } from "@/lib/arcade-challenges";
+import { recordDailyActivity } from "@/lib/daily-challenge";
 
 const details = {
   sprint: { name: "Speed Sprint", kicker: "30 SECOND DASH", headline: ["Fast hands.", "Fast score."], description: "Clear as many words as you can before the clock runs out. Exact words clear instantly." },
@@ -46,6 +47,10 @@ export default function ArcadeChallenge({ mode }: { mode: ChallengeMode }) {
     setBest(game.score);
     try { localStorage.setItem(bestKey, String(game.score)); } catch { /* Keep the score for this visit. */ }
   }, [game.status, game.score, best, bestKey]);
+
+  useEffect(() => {
+    if (game.status === "finished") recordDailyActivity({ kind: "game", gameId: mode, score: game.score });
+  }, [game.status, game.score, mode]);
 
   function play() {
     dispatch({ type: "start" });

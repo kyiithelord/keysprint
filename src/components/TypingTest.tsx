@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { calculateStats, createTarget, readResults, saveResult, type Difficulty, type Duration, type Mode, type SavedResult } from "@/lib/typing";
 import TypingPrompt from "./TypingPrompt";
+import { recordDailyActivity } from "@/lib/daily-challenge";
 
 const durations: Duration[] = [15, 30, 60, 120];
 
@@ -24,6 +25,15 @@ export default function TypingTest() {
   const finishRef = useRef<() => void>(() => {});
 
   useEffect(() => {
+    const requested = Number(new URLSearchParams(window.location.search).get("duration"));
+    if (![15, 30, 60, 120].includes(requested)) return;
+    const next = requested as Duration;
+    setDuration(next);
+    setRemaining(next);
+    setTarget(createTarget("words", "standard", next));
+  }, []);
+
+  useEffect(() => {
     try { localStorage.setItem("keysprint-storage-check", "1"); localStorage.removeItem("keysprint-storage-check"); }
     catch { setStorageAvailable(false); }
     setBest(Math.max(0, ...readResults().filter(item => item.duration === duration && item.difficulty === difficulty && item.mode === mode).map(item => item.netWpm)));
@@ -35,6 +45,7 @@ export default function TypingTest() {
     const final = { ...calculateStats(inputRefValue.current, target, actualElapsed), duration, difficulty, mode, finishedAt: new Date().toISOString() };
     setResult(final);
     saveResult(final);
+    recordDailyActivity({ kind: "test", duration, correct: final.correct });
     setBest(previous => Math.max(previous ?? 0, final.netWpm));
     setRemaining(0);
     setElapsed(actualElapsed);
