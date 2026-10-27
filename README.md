@@ -39,6 +39,10 @@ Open `/progress` to review saved tests. Filter by duration, difficulty, and mode
 
 Open `/guides` for practical articles about typing speed, accuracy, and common mistakes. Each guide links to a relevant lesson, timed test, or progress view.
 
+## About, contact, and policies
+
+The `/about`, `/contact`, `/privacy`, and `/terms` pages explain the current product and link from every footer. No public contact email is listed yet, as requested. Before public launch, add a real contact method and operator country; if using email, copy `.env.example` to `.env.local` and set the address there. The privacy page also needs the chosen hosting provider and its relevant technical-data practices added after deployment is decided. Review the policies whenever ads or analytics are introduced.
+
 ## Launch gaps
 
-This is an initial typing engine, homepage, beginner lesson set, local progress dashboard, and guide library, not a public launch. The BRD's legal pages, contact details, SEO sitemap and robots file, consent handling, deployment, and AdSense integration remain to be completed. Advertising should be connected only after approval.
+This is an initial typing engine, homepage, beginner lesson set, local progress dashboard, guide library, and draft company and policy pages, not a public launch. A real contact method, hosting details, SEO sitemap and robots file, consent handling, deployment, and AdSense integration remain to be completed. Advertising should be connected only after approval.

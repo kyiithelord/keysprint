@@ -1,3 +1,4 @@
+import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -25,6 +26,6 @@ export default async function GuidePage({ params }: Props) {
     <SiteHeader current="guides" />
     <article className="guide-article"><a className="guide-back" href="/guides">← All typing guides</a><header><p className="eyebrow">{guide.label} · {guide.readTime}</p><h1>{guide.title}</h1><p className="guide-deck">{guide.intro}</p></header><div className="guide-body">{guide.sections.map((section, index) => <section key={section.heading}><span className="guide-section-number">{String(index + 1).padStart(2, "0")}</span><div><h2>{section.heading}</h2>{section.paragraphs.map(paragraph => <p key={paragraph}>{paragraph}</p>)}</div></section>)}<aside className="guide-practice"><p className="eyebrow">MAKE IT PRACTICAL</p><h2>{guide.practice.heading}</h2><ol>{guide.practice.steps.map(step => <li key={step}>{step}</li>)}</ol><a className="button primary" href={guide.practice.href}>{guide.practice.cta}</a></aside></div></article>
     <section className="guide-related"><p className="eyebrow">KEEP LEARNING</p><h2>Read another guide</h2><div>{related.map(item => <a href={`/guides/${item.slug}`} key={item.slug}><span>{item.label}</span><strong>{item.title}</strong><span aria-hidden="true">↗</span></a>)}</div></section>
-    <footer><div><a className="brand" href="/">KeySprint</a><p>Free typing practice for steady progress.</p></div><div><a href="/#practice">Take a free test ↗</a></div><small>© {new Date().getFullYear()} KeySprint</small></footer>
+    <SiteFooter />
   </main>;
 }
