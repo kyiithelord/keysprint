@@ -105,3 +105,8 @@
 @media(max-width:1000px){.daily-board{grid-template-columns:1fr}.daily-side{display:grid;grid-template-columns:1fr 1fr;gap:18px}.daily-streak-card{grid-row:span 2}.daily-week-card,.daily-badge-card{margin:0}}
 @media(max-width:650px){.daily-shell{padding:53px 5.5% 75px}.daily-intro h1{font-size:55px}.daily-progress-card{padding:25px;align-items:flex-start}.daily-progress-card h2{font-size:37px}.daily-progress-ring{width:80px;height:80px}.daily-progress-ring>div{width:67px;height:67px}.daily-progress-ring strong{font-size:24px}.daily-progress-ring small{font-size:11px}.daily-progress-ring span{font-size:6px}.daily-task{padding:20px 17px;gap:14px}.daily-task-symbol{width:37px;height:37px;font-size:18px}.daily-task h3{font-size:24px}.daily-task-meta{font-size:8px}.daily-side{display:block}.daily-streak-card{min-height:0}.daily-week-card,.daily-badge-card{margin-top:16px}.daily-home-promo{flex-direction:column;align-items:flex-start;padding:27px 22px;margin-bottom:65px}.daily-home-promo>div{align-items:flex-start}.daily-home-icon{width:48px;height:48px;font-size:24px}.daily-home-promo h2{font-size:29px}.daily-home-promo .button{width:100%}}
 .daily-streak-card>strong small{margin-left:6px}
+
+/* Match the arcade hero to the original KeySprint artwork. */
+.game-intro{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:8%;align-items:center;margin-bottom:58px}.game-intro-copy{font-size:16px;line-height:1.7;color:#596474;max-width:430px;margin:24px 0 0}.game-hero-art{width:100%;min-width:0}
+@media(max-width:850px){.game-intro{grid-template-columns:1fr;gap:34px}.game-hero-art{max-width:600px}}
+@media(max-width:650px){.game-intro-copy{font-size:14px;margin-top:20px}.game-hero-art{height:255px}}
