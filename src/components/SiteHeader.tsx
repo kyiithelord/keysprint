@@ -37,18 +37,30 @@ export default function SiteHeader({ current }: { current: Section }) {
 
   return <>
     <header ref={normalRef} className="site-header" inert={showFloating}>
-      <HeaderLinks current={current} signedIn={signedIn} />
+      <HeaderLinks current={current} signedIn={signedIn} navId="primary-navigation" />
     </header>
     <header className={`site-header floating-header${showFloating ? " is-visible" : ""}`} aria-hidden={!showFloating} inert={!showFloating}>
-      <HeaderLinks current={current} signedIn={signedIn} />
+      <HeaderLinks current={current} signedIn={signedIn} navId="floating-navigation" />
     </header>
   </>;
 }
 
-function HeaderLinks({ current, signedIn }: { current: Section; signedIn: boolean }) {
+function HeaderLinks({ current, signedIn, navId }: { current: Section; signedIn: boolean; navId: string }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [menuOpen]);
+
   return <>
     <a className="brand" href="/" aria-label="KeySprint home"><span className="brand-mark">K<span>↗</span></span> KeySprint</a>
-    <nav aria-label="Main navigation">
+    <button className={`mobile-menu-toggle${menuOpen ? " is-open" : ""}`} type="button" aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen} aria-controls={navId} onClick={() => setMenuOpen((open) => !open)}><span /><span /><span /></button>
+    <nav id={navId} className={menuOpen ? "is-open" : undefined} aria-label="Main navigation" onClick={() => setMenuOpen(false)}>
       <a href={current === "home" ? "#practice" : "/#practice"}>Practice</a>
       <a href="/lessons" aria-current={current === "lessons" ? "page" : undefined}>Typing lessons</a>
       <a href="/game" aria-current={current === "game" ? "page" : undefined}>Typing games</a>
