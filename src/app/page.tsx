@@ -1,3 +1,4 @@
+import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 import TypingTest from "@/components/TypingTest";
 
@@ -8,6 +9,6 @@ export default function Home() {
     <TypingTest />
     <section className="insights" id="guide"><div><p className="eyebrow">THE NUMBERS, EXPLAINED</p><h2>Know what<br />you&apos;re improving.</h2><a className="insights-guide-link" href="/guides">Read typing guides →</a></div><div className="insight-grid"><article><span className="insight-number">01</span><h3>Words per minute</h3><p>Five characters count as one word. Raw WPM uses everything you typed; net WPM counts correct characters.</p></article><article><span className="insight-number">02</span><h3>Accuracy</h3><p>Your correct characters divided by the characters currently typed. Corrections with Backspace update the score.</p></article><article><span className="insight-number">03</span><h3>Your own pace</h3><p>Take another test and compare your best net WPM on this device. A steady habit matters more than one score.</p></article></div></section>
     <section className="learn" id="learn"><div><p className="eyebrow">A LITTLE PRACTICE GOES A LONG WAY</p><h2>Start with the basics.</h2><p>Short, focused sessions help build comfort at the keyboard. Try these simple habits during your next test.</p><a className="button primary" href="/lessons">Explore typing lessons →</a><a className="progress-home-link" href="/progress">See your progress →</a></div><div className="lesson-list"><article><span>01</span><div><h3>Choose accuracy first</h3><p>Slow down enough to hit the right keys. As the movements become familiar, increase your pace gradually.</p></div></article><article><span>02</span><div><h3>Look at the screen</h3><p>Keep your eyes on the text and use the raised marks on F and J to find your home row by touch.</p></div></article><article><span>03</span><div><h3>Practice in short rounds</h3><p>Use a 15 or 30 second test to warm up, then try a longer session to work on consistency.</p></div></article></div></section>
-    <footer id="about"><div><a className="brand" href="/">KeySprint</a><p>Free typing practice for steady progress.</p></div><div><span>Contact, privacy policy, and terms will be added before public launch.</span></div><small>© {new Date().getFullYear()} KeySprint</small></footer>
+    <SiteFooter />
   </main>;
 }

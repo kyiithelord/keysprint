@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-type Section = "home" | "lessons" | "progress" | "guides";
+type Section = "home" | "lessons" | "progress" | "guides" | "info";
 
 export default function SiteHeader({ current }: { current: Section }) {
   const normalRef = useRef<HTMLElement>(null);
@@ -37,7 +37,7 @@ function HeaderLinks({ current }: { current: Section }) {
       <a href="/lessons" aria-current={current === "lessons" ? "page" : undefined}>Typing lessons</a>
       <a href="/progress" aria-current={current === "progress" ? "page" : undefined}>My progress</a>
       <a href="/guides" aria-current={current === "guides" ? "page" : undefined}>Typing guides</a>
-      <a href={current === "home" ? "#about" : "/#about"}>About</a>
+      <a href="/about">About</a>
     </nav>
   </>;
 }
