@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import AuthRedirect from "@/components/AuthRedirect";
 import ProgressSync from "@/components/ProgressSync";
 import "./globals.css";
@@ -9,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body><AuthRedirect /><ProgressSync />{children}</body></html>;
+  return <html lang="en"><body><AuthRedirect /><ProgressSync />{children}<Analytics /></body></html>;
 }
