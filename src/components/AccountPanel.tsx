@@ -30,20 +30,24 @@ export default function AccountPanel() {
   useEffect(() => {
     const client = getAuthClient();
     if (!client) { setLoading(false); return; }
+    let mounted = true;
     const hash = new URLSearchParams(window.location.hash.slice(1));
     if (hash.get("type") === "recovery") setMode("reset");
     if (hash.get("error_description")) setErrorMessage(hash.get("error_description") || "The sign-in link could not be used.");
+    const timeout = window.setTimeout(() => {
+      if (!mounted) return;
+      setLoading(false);
+      setErrorMessage(current => current || "Account check is taking longer than expected. You can still sign in below.");
+    }, 8000);
     const { data: { subscription } } = client.auth.onAuthStateChange((event, session) => {
+      if (!mounted) return;
+      window.clearTimeout(timeout);
       setUser(session?.user ?? null);
       if (event === "PASSWORD_RECOVERY") setMode("reset");
+      if (session?.user) setErrorMessage("");
       setLoading(false);
     });
-    void client.auth.getSession().then(({ data, error }) => {
-      if (error) setErrorMessage(error.message);
-      setUser(data.session?.user ?? null);
-      setLoading(false);
-    });
-    return () => subscription.unsubscribe();
+    return () => { mounted = false; window.clearTimeout(timeout); subscription.unsubscribe(); };
   }, []);
 
   function changeMode(next: Mode) {
@@ -68,8 +72,9 @@ export default function AccountPanel() {
         setMessage(data.session ? "Your account is ready." : "Check your inbox for the confirmation link before signing in.");
         setPassword(""); setConfirmPassword("");
       } else if (mode === "sign-in") {
-        const { error } = await client.auth.signInWithPassword({ email: email.trim(), password });
+        const { data, error } = await client.auth.signInWithPassword({ email: email.trim(), password });
         if (error) throw error;
+        setUser(data.user);
         setPassword("");
       } else if (mode === "forgot") {
         const { error } = await client.auth.resetPasswordForEmail(email.trim(), { redirectTo: `${window.location.origin}/account` });
