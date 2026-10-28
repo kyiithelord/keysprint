@@ -3,8 +3,9 @@
 import { useEffect, useReducer, useRef, useState } from "react";
 import { GHOST_FINISH_SECONDS, RACE_TIME_LIMIT, RACE_WORD_COUNT, newRace, raceReducer, raceWord } from "@/lib/typing-racer";
 import { recordDailyActivity } from "@/lib/daily-challenge";
+import { readGameBest, saveGameBest } from "@/lib/progress-storage";
 
-const BEST_KEY = "keysprint-typing-racer-best-v1";
+const BEST_MODE = "typing-racer";
 
 export default function TypingRacerGame() {
   const [race, dispatch] = useReducer(raceReducer, undefined, newRace);
@@ -16,7 +17,10 @@ export default function TypingRacerGame() {
   const secondsLeft = Math.ceil(RACE_TIME_LIMIT - race.elapsed);
 
   useEffect(() => {
-    try { setBest(Number(localStorage.getItem(BEST_KEY)) || 0); } catch { /* The race works without storage. */ }
+    const refresh = () => setBest(readGameBest(BEST_MODE));
+    refresh();
+    window.addEventListener("keysprint-progress-update", refresh);
+    return () => window.removeEventListener("keysprint-progress-update", refresh);
   }, []);
 
   useEffect(() => {
@@ -39,7 +43,7 @@ export default function TypingRacerGame() {
   useEffect(() => {
     if (race.status !== "finished" || race.score <= best) return;
     setBest(race.score);
-    try { localStorage.setItem(BEST_KEY, String(race.score)); } catch { /* Keep the score for this visit. */ }
+    try { saveGameBest(BEST_MODE, race.score); } catch { /* Keep the score for this visit. */ }
   }, [race.status, race.score, best]);
 
   useEffect(() => {

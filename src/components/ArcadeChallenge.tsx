@@ -3,6 +3,7 @@
 import { useEffect, useReducer, useRef, useState, type FormEvent } from "react";
 import { CHALLENGE_LIVES, MEMORY_ROUNDS, PRECISION_ROUNDS, SPRINT_DURATION, challengeReducer, challengeWord, newChallenge, type ChallengeMode } from "@/lib/arcade-challenges";
 import { recordDailyActivity } from "@/lib/daily-challenge";
+import { readGameBest, saveGameBest } from "@/lib/progress-storage";
 
 const details = {
   sprint: { name: "Speed Sprint", kicker: "30 SECOND DASH", headline: ["Fast hands.", "Fast score."], description: "Clear as many words as you can before the clock runs out. Exact words clear instantly." },
@@ -14,7 +15,6 @@ export default function ArcadeChallenge({ mode }: { mode: ChallengeMode }) {
   const [game, dispatch] = useReducer(challengeReducer, mode, newChallenge);
   const [best, setBest] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
-  const bestKey = `keysprint-${mode}-best-v1`;
   const detail = details[mode];
   const target = challengeWord(mode, game.round);
   const roundLimit = mode === "precision" ? PRECISION_ROUNDS : MEMORY_ROUNDS;
@@ -22,8 +22,11 @@ export default function ArcadeChallenge({ mode }: { mode: ChallengeMode }) {
   const prefixMatches = target.startsWith(game.input);
 
   useEffect(() => {
-    try { setBest(Number(localStorage.getItem(bestKey)) || 0); } catch { /* Keep playing without storage. */ }
-  }, [bestKey]);
+    const refresh = () => setBest(readGameBest(mode));
+    refresh();
+    window.addEventListener("keysprint-progress-update", refresh);
+    return () => window.removeEventListener("keysprint-progress-update", refresh);
+  }, [mode]);
 
   useEffect(() => {
     if (game.status !== "running") return;
@@ -45,8 +48,8 @@ export default function ArcadeChallenge({ mode }: { mode: ChallengeMode }) {
   useEffect(() => {
     if (game.status !== "finished" || game.score <= best) return;
     setBest(game.score);
-    try { localStorage.setItem(bestKey, String(game.score)); } catch { /* Keep the score for this visit. */ }
-  }, [game.status, game.score, best, bestKey]);
+    try { saveGameBest(mode, game.score); } catch { /* Keep the score for this visit. */ }
+  }, [game.status, game.score, best, mode]);
 
   useEffect(() => {
     if (game.status === "finished") recordDailyActivity({ kind: "game", gameId: mode, score: game.score });

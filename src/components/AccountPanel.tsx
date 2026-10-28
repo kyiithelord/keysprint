@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import type { User } from "@supabase/supabase-js";
 import { getAuthClient } from "@/lib/auth";
 import { authConfigured } from "@/lib/auth-config";
+import { getSyncState, type SyncState } from "@/lib/progress-sync";
 
 type Mode = "sign-in" | "sign-up" | "forgot" | "reset";
 
@@ -17,6 +18,13 @@ export default function AccountPanel() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [syncState, setSyncState] = useState<SyncState>(() => getSyncState());
+
+  useEffect(() => {
+    const refresh = () => setSyncState(getSyncState());
+    window.addEventListener("keysprint-sync-status", refresh);
+    return () => window.removeEventListener("keysprint-sync-status", refresh);
+  }, []);
 
   useEffect(() => {
     const client = getAuthClient();
@@ -112,7 +120,7 @@ export default function AccountPanel() {
   return <div className="account-card">
     {message && <p className="account-message" role="status">{message}</p>}
     {errorMessage && <p className="account-error" role="alert">{errorMessage}</p>}
-    {loading ? <p role="status">Checking your account…</p> : user && mode !== "reset" ? <div className="account-profile"><p className="eyebrow">SIGNED IN</p><h2>Welcome back.</h2><p>You are signed in as <strong>{user.email}</strong>.</p><p>Your current typing results and lesson progress are still saved only in this browser. Account sync is not available yet.</p><div className="account-actions"><a className="button primary" href="/progress">View progress →</a><button className="button secondary" onClick={signOut} disabled={busy}>Sign out</button></div></div> : <>
+    {loading ? <p role="status">Checking your account…</p> : user && mode !== "reset" ? <div className="account-profile"><p className="eyebrow">SIGNED IN</p><h2>Welcome back.</h2><p>You are signed in as <strong>{user.email}</strong>.</p><p role="status">{syncState.state === "synced" ? "Your progress is synced across devices." : syncState.state === "syncing" ? "Syncing your progress…" : syncState.state === "error" ? `Progress is saved here, but cloud sync failed: ${syncState.message}` : "Preparing your progress…"}</p><div className="account-actions"><a className="button primary" href="/progress">View progress →</a><button className="button secondary" onClick={signOut} disabled={busy}>Sign out</button></div></div> : <>
       {mode === "sign-in" || mode === "sign-up" ? <div className="account-tabs" role="tablist" aria-label="Account action"><button type="button" role="tab" aria-selected={mode === "sign-in"} className={mode === "sign-in" ? "active" : ""} onClick={() => changeMode("sign-in")}>Sign in</button><button type="button" role="tab" aria-selected={mode === "sign-up"} className={mode === "sign-up" ? "active" : ""} onClick={() => changeMode("sign-up")}>Create account</button></div> : <button className="account-back" type="button" onClick={() => changeMode("sign-in")}>← Back to sign in</button>}
       <h2>{mode === "sign-up" ? "Create your account." : mode === "forgot" ? "Reset your password." : mode === "reset" ? "Choose a new password." : "Welcome back."}</h2>
       <p className="account-subtitle">{mode === "sign-up" ? "Use your email to make a free KeySprint account." : mode === "forgot" ? "Enter your account email and we will send a reset link." : mode === "reset" ? "Enter a new password for your account." : "Sign in to your KeySprint account."}</p>
@@ -124,7 +132,7 @@ export default function AccountPanel() {
         <button className="button primary account-submit" type="submit" disabled={busy}>{busy ? "Please wait…" : mode === "sign-up" ? "Create account →" : mode === "forgot" ? "Send reset link →" : mode === "reset" ? "Update password →" : "Sign in →"}</button>
       </form>
       {(mode === "sign-in" || mode === "sign-up") && <button className="account-forgot" type="button" onClick={resendConfirmation} disabled={busy}>Resend confirmation email</button>}
-      <p className="account-small">Creating an account is optional. Your existing local progress will stay on this device and will not sync to your account yet.</p>
+      <p className="account-small">Creating an account is optional. Sign in to sync your typing results, lessons, game bests, and daily challenges across devices.</p>
     </>}
   </div>;
 }

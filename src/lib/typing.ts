@@ -1,3 +1,5 @@
+import { notifyProgressChanged, progressKeys, progressStorageKey } from "./progress-storage";
+
 export type Duration = 15 | 30 | 60 | 120;
 export type Difficulty = "easy" | "standard" | "advanced";
 export type Mode = "words" | "sentences";
@@ -50,11 +52,9 @@ export function createTarget(mode: Mode, difficulty: Difficulty, duration: Durat
 }
 
 export type SavedResult = Stats & { duration: Duration; difficulty: Difficulty; mode: Mode; finishedAt: string };
-const STORAGE_KEY = "keysprint-results-v1";
-
-export function readResults(): SavedResult[] {
+export function readResultsForUser(userId?: string | null): SavedResult[] {
   try {
-    const value = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    const value = JSON.parse(localStorage.getItem(progressStorageKey(progressKeys.results, userId)) || "[]");
     return Array.isArray(value) ? value.filter((entry): entry is SavedResult =>
       typeof entry?.netWpm === "number" && Number.isFinite(entry.netWpm) &&
       typeof entry?.rawWpm === "number" && typeof entry?.accuracy === "number" &&
@@ -67,9 +67,14 @@ export function readResults(): SavedResult[] {
   }
 }
 
+export function readResults(): SavedResult[] {
+  return readResultsForUser();
+}
+
 export function saveResult(result: SavedResult): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([result, ...readResults()].slice(0, 100)));
+    localStorage.setItem(progressStorageKey(progressKeys.results), JSON.stringify([result, ...readResults()].slice(0, 100)));
+    notifyProgressChanged();
   } catch {
     // Typing remains usable when storage is unavailable.
   }

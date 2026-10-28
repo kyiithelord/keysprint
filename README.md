@@ -45,11 +45,11 @@ Each game awards word and combo points, pauses when the tab is hidden, and saves
 
 ## Daily challenge
 
-Open `/daily` for a new local-date challenge: finish the day's specified timed test, repeat its assigned lesson, and complete its assigned game with a score. Each completed day adds to your practice streak; the page shows a weekly calendar and streak milestones. Daily activity and game bests remain in browser local storage and can be cleared from `/privacy`. Accounts do not sync them between devices.
+Open `/daily` for a new local-date challenge: finish the day's specified timed test, repeat its assigned lesson, and complete its assigned game with a score. Each completed day adds to your practice streak; the page shows a weekly calendar and streak milestones. Guest activity and game bests stay in browser storage. Signed-in progress syncs through Supabase after the database migration is applied.
 
 ## Progress dashboard
 
-Open `/progress` to review saved tests. Filter by duration, difficulty, and mode; compare daily average net WPM and accuracy in the chart; and see your personal best, average accuracy, and result history. Up to 100 recent tests are kept in browser local storage. Results do not sync between devices.
+Open `/progress` to review saved tests. Filter by duration, difficulty, and mode; compare daily average net WPM and accuracy in the chart; and see your personal best, average accuracy, and result history. Up to 100 recent tests are shown locally. Signed-in results sync between devices after the database migration is applied.
 
 ## Typing guides
 
@@ -61,13 +61,16 @@ The `/about`, `/contact`, `/privacy`, and `/terms` pages explain the current pro
 
 ## Optional email accounts
 
-`/account` supports email/password sign-up, email confirmation, sign-in, password reset, and sign-out through Supabase Auth. The form stays unavailable and the Account navigation link stays hidden until Supabase is configured. Typing tests remain account-free, and local progress does **not** sync to accounts.
+`/account` supports email/password sign-up, email confirmation, sign-in, password reset, and sign-out through Supabase Auth. The form stays unavailable and the Account navigation link stays hidden until Supabase is configured. Typing tests remain account-free. Signed-in users can sync tests, lessons, daily challenges, and game bests across devices.
 
 1. Create a Supabase project and copy its Project URL and **publishable key**. Never use a service-role or secret key in `NEXT_PUBLIC_` variables.
 2. In Supabase Authentication settings, keep the Email provider and email confirmation enabled. Under URL Configuration, set the Site URL to your final production URL and add exact redirect URLs for `https://your-domain/account` and `http://localhost:3000/account` (and any preview URL you intend to test).
-3. Copy `.env.example` to `.env.local` and set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Add the same two variables in Vercel Project Settings → Environment Variables, then redeploy.
-4. Test sign-up, confirmation email, sign-in, password reset, and sign-out on the deployed URL. Configure a production SMTP provider in Supabase before opening registration to the public; the default email sender is for limited testing.
-5. Before enabling accounts publicly, update the privacy policy with the final operator, hosting, support, retention, and account deletion process.
+3. Run [`supabase/migrations/20261028_progress_events.sql`](supabase/migrations/20261028_progress_events.sql) in the Supabase SQL Editor. It creates an append-only progress table with per-user Row Level Security.
+4. Copy `.env.example` to `.env.local` and set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Add the same two variables in Vercel Project Settings → Environment Variables, then redeploy.
+5. Test sign-up, confirmation email, sign-in, password reset, sign-out, and progress on two devices on the deployed URL. Configure a production SMTP provider in Supabase before opening registration to the public; the default email sender is for limited testing.
+6. Before enabling accounts publicly, update the privacy policy with the final operator, hosting, support, retention, and account deletion process.
+
+The first account signed in on a browser imports existing guest progress. After that, another account on the same browser does not inherit those guest records. Account progress is stored under account-specific local keys. The Privacy page can delete signed-in progress from both Supabase and the current device.
 
 ## Launch gaps
 

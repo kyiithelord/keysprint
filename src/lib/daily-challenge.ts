@@ -1,3 +1,5 @@
+import { notifyProgressChanged, progressKeys, progressStorageKey } from "./progress-storage";
+
 export type DailyTask = "test" | "lesson" | "game";
 export type DailyGame = "rush" | "sprint" | "precision" | "memory" | "racer";
 export type DailyRecord = { test: boolean; lesson: boolean; game: boolean };
@@ -8,7 +10,6 @@ export type DailyActivity =
   | { kind: "lesson"; lessonId: string }
   | { kind: "game"; gameId: DailyGame; score: number };
 
-const STORAGE_KEY = "keysprint-daily-challenges-v1";
 const DURATIONS = [15, 30, 60] as const;
 const LESSON_IDS = ["home-row", "top-row", "bottom-row", "sentences"] as const;
 const GAME_IDS: DailyGame[] = ["rush", "sprint", "precision", "memory", "racer"];
@@ -73,9 +74,9 @@ export function bestStreak(records: DailyRecords): number {
   return best;
 }
 
-export function readDailyRecords(): DailyRecords {
+export function readDailyRecordsForUser(userId?: string | null): DailyRecords {
   try {
-    const value = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    const value = JSON.parse(localStorage.getItem(progressStorageKey(progressKeys.daily, userId)) || "{}");
     if (!value || typeof value !== "object" || Array.isArray(value)) return {};
     return Object.fromEntries(Object.entries(value).filter(([date, record]) =>
       /^\d{4}-\d{2}-\d{2}$/.test(date) && record && typeof record === "object" &&
@@ -83,6 +84,10 @@ export function readDailyRecords(): DailyRecords {
       typeof (record as DailyRecord).lesson === "boolean" &&
       typeof (record as DailyRecord).game === "boolean")) as DailyRecords;
   } catch { return {}; }
+}
+
+export function readDailyRecords(): DailyRecords {
+  return readDailyRecordsForUser();
 }
 
 export function recordDailyActivity(activity: DailyActivity, date = new Date()): boolean {
@@ -96,7 +101,8 @@ export function recordDailyActivity(activity: DailyActivity, date = new Date()):
     record[activity.kind] = true;
     records[today] = record;
     const recent = Object.fromEntries(Object.entries(records).sort(([a], [b]) => b.localeCompare(a)).slice(0, 400));
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(recent));
+    localStorage.setItem(progressStorageKey(progressKeys.daily), JSON.stringify(recent));
+    notifyProgressChanged();
     window.dispatchEvent(new Event("keysprint-daily-update"));
     return true;
   } catch { return false; }

@@ -3,8 +3,9 @@
 import { useEffect, useReducer, useRef, useState } from "react";
 import { GAME_DURATION, GAME_LIVES, gameReducer, newGame } from "@/lib/word-game";
 import { recordDailyActivity } from "@/lib/daily-challenge";
+import { readGameBest, saveGameBest } from "@/lib/progress-storage";
 
-const BEST_KEY = "keysprint-word-rush-best-v1";
+const BEST_MODE = "word-rush";
 
 export default function WordRushGame() {
   const [game, dispatch] = useReducer(gameReducer, undefined, newGame);
@@ -12,7 +13,10 @@ export default function WordRushGame() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    try { setBest(Number(localStorage.getItem(BEST_KEY)) || 0); } catch { /* Game remains playable without storage. */ }
+    const refresh = () => setBest(readGameBest(BEST_MODE));
+    refresh();
+    window.addEventListener("keysprint-progress-update", refresh);
+    return () => window.removeEventListener("keysprint-progress-update", refresh);
   }, []);
 
   useEffect(() => {
@@ -35,7 +39,7 @@ export default function WordRushGame() {
   useEffect(() => {
     if (game.status !== "finished" || game.score <= best) return;
     setBest(game.score);
-    try { localStorage.setItem(BEST_KEY, String(game.score)); } catch { /* Keep the score for this visit. */ }
+    try { saveGameBest(BEST_MODE, game.score); } catch { /* Keep the score for this visit. */ }
   }, [game.status, game.score, best]);
 
   useEffect(() => {

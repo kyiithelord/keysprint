@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import AuthRedirect from "@/components/AuthRedirect";
+import ProgressSync from "@/components/ProgressSync";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "KeySprint — Free Typing Speed Test",
-  description: "Practice your typing rhythm with free timed tests, instant WPM and accuracy feedback, and progress saved on this device.",
+  description: "Practice your typing rhythm with free timed tests, instant WPM and accuracy feedback, and optional progress sync across devices.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body><AuthRedirect />{children}</body></html>;
+  return <html lang="en"><body><AuthRedirect /><ProgressSync />{children}</body></html>;
 }

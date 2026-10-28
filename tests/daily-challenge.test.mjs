@@ -3,8 +3,12 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import ts from "typescript";
 
+const storageSource = await readFile(new URL("../src/lib/progress-storage.ts", import.meta.url), "utf8");
+const storageJavascript = ts.transpileModule(storageSource, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2020 } }).outputText;
+const storageUrl = `data:text/javascript;base64,${Buffer.from(storageJavascript).toString("base64")}`;
+
 const source = await readFile(new URL("../src/lib/daily-challenge.ts", import.meta.url), "utf8");
-const javascript = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2020 } }).outputText;
+const javascript = ts.transpileModule(source.replace('from "./progress-storage"', `from "${storageUrl}"`), { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2020 } }).outputText;
 const { dailyPlan, activityMatches, currentStreak, bestStreak, recordDailyActivity, readDailyRecords, localDateKey } = await import(`data:text/javascript;base64,${Buffer.from(javascript).toString("base64")}`);
 
 test("daily plan is stable for a date and changes on the next day", () => {
