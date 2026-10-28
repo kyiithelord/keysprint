@@ -70,7 +70,7 @@ export default function WordRushGame() {
       <div className="rush-danger-line" aria-hidden="true"><span>MISS ZONE</span><span>MISS ZONE</span></div>
       {game.status !== "running" && <div className="rush-overlay">
         <div className="rush-overlay-card">
-          <span className="rush-overlay-kicker">{game.status === "finished" ? "ROUND COMPLETE" : game.status === "paused" ? "GAME PAUSED" : "KEYSPRINT ARCADE / 01"}</span>
+          <span className="rush-overlay-kicker">{game.status === "finished" ? "ROUND COMPLETE" : game.status === "paused" ? "GAME PAUSED" : "TYPENCIL ARCADE / 01"}</span>
           <h2>{game.status === "finished" ? <>Nice run.<br /><em>Go again?</em></> : game.status === "paused" ? <>Catch your<br /><em>breath.</em></> : <>Words fall.<br /><em>You rise.</em></>}</h2>
           <p>{game.status === "finished" ? `${game.cleared} words cleared · ${game.bestCombo} best combo · ${game.score.toLocaleString()} points` : game.status === "paused" ? "Your score and remaining lives are waiting for you." : "Type each word before it reaches the bottom. Three misses end the round. Build a combo for bonus points."}</p>
           <button type="button" className="button primary" onClick={play}>{game.status === "paused" ? "Resume game ↗" : game.status === "finished" ? "Play again ↗" : "Start game ↗"}</button>

@@ -1,6 +1,6 @@
-# KeySprint
+# Typencil
 
-A free typing test and beginner lesson prototype based on the KeySprint BRD. Built with Next.js, TypeScript, React, and Tailwind CSS.
+A free typing test and beginner lesson prototype. Built with Next.js, TypeScript, React, and Tailwind CSS.
 
 ## Run locally
 
@@ -57,7 +57,7 @@ Open `/guides` for practical articles about typing speed, accuracy, and common m
 
 ## About, contact, and policies
 
-The `/about`, `/contact`, `/privacy`, and `/terms` pages explain the current product and link from every footer. No public contact email is listed yet, as requested. Before public launch, add a real contact method and operator country; if using email, copy `.env.example` to `.env.local` and set the address there. The privacy page also needs the chosen hosting provider and its relevant technical-data practices added after deployment is decided. Review the policies whenever ads or analytics are introduced.
+The `/about`, `/contact`, `/privacy`, and `/terms` pages explain the current product and link from every footer. No public contact email is listed yet, as requested. Before public launch, add a real contact method and operator country; if using email, copy `.env.example` to `.env.local` and set the address there. The privacy page describes Vercel hosting and Web Analytics. Review the policies whenever data handling changes.
 
 ## Optional email accounts
 

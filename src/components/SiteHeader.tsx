@@ -58,7 +58,7 @@ function HeaderLinks({ current, signedIn, navId }: { current: Section; signedIn:
   }, [menuOpen]);
 
   return <>
-    <a className="brand" href="/" aria-label="KeySprint home"><span className="brand-mark">K<span>↗</span></span> KeySprint</a>
+    <a className="brand" href="/" aria-label="Typencil home"><span className="brand-mark" aria-hidden="true" /> Typencil</a>
     <button className={`mobile-menu-toggle${menuOpen ? " is-open" : ""}`} type="button" aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen} aria-controls={navId} onClick={() => setMenuOpen((open) => !open)}><span /><span /><span /></button>
     <nav id={navId} className={menuOpen ? "is-open" : undefined} aria-label="Main navigation" onClick={() => setMenuOpen(false)}>
       <a href={current === "home" ? "#practice" : "/#practice"}>Practice</a>

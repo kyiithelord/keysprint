@@ -13,7 +13,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const guide = guides.find(item => item.slug === slug);
-  return guide ? { title: `${guide.title} | KeySprint`, description: guide.description } : {};
+  return guide ? { title: `${guide.title} | Typencil`, description: guide.description } : {};
 }
 
 export default async function GuidePage({ params }: Props) {

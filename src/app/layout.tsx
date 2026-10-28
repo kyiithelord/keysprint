@@ -5,7 +5,7 @@ import ProgressSync from "@/components/ProgressSync";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "KeySprint — Free Typing Speed Test",
+  title: "Typencil — Free Typing Speed Test",
   description: "Practice your typing rhythm with free timed tests, instant WPM and accuracy feedback, and optional progress sync across devices.",
 };
 

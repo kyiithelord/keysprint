@@ -20,8 +20,8 @@ export default function ClearLocalDataButton() {
   async function clearData() {
     const signedIn = Boolean(userId);
     if (!window.confirm(signedIn
-      ? "Delete all synced KeySprint tests, lessons, game bests, and daily challenges from your account and this device? This cannot be undone."
-      : "Delete saved KeySprint tests, lessons, game bests, and daily challenges from this browser?")) return;
+      ? "Delete all synced Typencil tests, lessons, game bests, and daily challenges from your account and this device? This cannot be undone."
+      : "Delete saved Typencil tests, lessons, game bests, and daily challenges from this browser?")) return;
     setBusy(true);
     setMessage("");
     try {

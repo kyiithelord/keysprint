@@ -56,7 +56,7 @@ export default function TypingRacerGame() {
   }
 
   return <section className="racer-game" aria-label="Typing Racer game">
-    <div className="racer-header"><div className="racer-brand"><span className="racer-brand-mark">R<span>↗</span></span><div><span>KEYSPRINT ARCADE / 05</span><strong>TYPING RACER</strong></div></div><div className="racer-header-right"><span className="racer-live"><i /> NIGHT CIRCUIT</span><span className="racer-best">PERSONAL BEST <strong>{best.toLocaleString()}</strong></span></div></div>
+    <div className="racer-header"><div className="racer-brand"><span className="racer-brand-mark">R<span>↗</span></span><div><span>TYPENCIL ARCADE / 05</span><strong>TYPING RACER</strong></div></div><div className="racer-header-right"><span className="racer-live"><i /> NIGHT CIRCUIT</span><span className="racer-best">PERSONAL BEST <strong>{best.toLocaleString()}</strong></span></div></div>
     <div className="racer-hud"><div><span>YOUR POSITION</span><strong>{Math.round(playerProgress * 100)}<small>%</small></strong></div><div><span>GHOST POSITION</span><strong>{Math.round(race.ghostProgress * 100)}<small>%</small></strong></div><div><span>TIME LEFT</span><strong>{secondsLeft}<small>s</small></strong></div><div><span>COMBO</span><strong>{race.combo}<small>×</small></strong></div><div><span>SCORE</span><strong>{race.score.toLocaleString()}</strong></div></div>
     <div className="racer-arena">
       <div className="racer-grid" aria-hidden="true" />

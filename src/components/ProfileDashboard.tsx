@@ -47,7 +47,7 @@ export default function ProfileDashboard({ user, syncState, onSignOut, busy }: {
 
   return <div className="profile-dashboard">
     <section className="profile-hero">
-      <div className="profile-hero-top"><span>KEYSPRINT / YOUR SPACE</span><span className={`profile-sync profile-sync-${syncState.state}`} role="status"><i />{syncLabel}</span></div>
+      <div className="profile-hero-top"><span>TYPENCIL / YOUR SPACE</span><span className={`profile-sync profile-sync-${syncState.state}`} role="status"><i />{syncLabel}</span></div>
       <div className="profile-hero-main"><div className="profile-avatar" aria-hidden="true">{initial}<span>↗</span></div><div><p className="profile-hero-kicker">WELCOME BACK</p><h1>Keep your rhythm<br /><em>moving.</em></h1><p className="profile-email">{user.email}</p></div></div>
       <div className="profile-hero-bottom"><span>Every session is a step forward.</span><button type="button" onClick={onSignOut} disabled={busy}>Sign out →</button></div>
     </section>
