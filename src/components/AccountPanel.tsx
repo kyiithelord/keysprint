@@ -8,6 +8,31 @@ import { getSyncState, type SyncState } from "@/lib/progress-sync";
 import ProfileDashboard from "@/components/ProfileDashboard";
 
 type Mode = "sign-in" | "sign-up" | "forgot" | "reset";
+const AUTH_ACTION_TIMEOUT_MS = 12000;
+
+async function finishAuthAction<T>(action: Promise<T>): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      action,
+      new Promise<never>((_resolve, reject) => {
+        timer = setTimeout(() => reject(new Error("Sign in is taking too long. Check your connection and try again.")), AUTH_ACTION_TIMEOUT_MS);
+      }),
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
+function accountError(error: unknown): string {
+  if (error instanceof Error) {
+    if (error.name === "AuthRetryableFetchError" || error.name === "AbortError" || error.message === "Failed to fetch") {
+      return "Could not reach the account service. Check your connection and try again.";
+    }
+    return error.message;
+  }
+  return "Something went wrong. Please try again.";
+}
 
 export default function AccountPanel() {
   const [mode, setMode] = useState<Mode>("sign-in");
@@ -59,27 +84,27 @@ export default function AccountPanel() {
       if ((mode === "sign-up" || mode === "reset") && password.length < 8) throw new Error("Use at least 8 characters for your password.");
       if ((mode === "sign-up" || mode === "reset") && password !== confirmPassword) throw new Error("The passwords do not match.");
       if (mode === "sign-up") {
-        const { data, error } = await client.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: `${window.location.origin}/account` } });
+        const { data, error } = await finishAuthAction(client.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: `${window.location.origin}/account` } }));
         if (error) throw error;
         setMessage(data.session ? "Your account is ready." : "Check your inbox for the confirmation link before signing in.");
         setPassword(""); setConfirmPassword("");
       } else if (mode === "sign-in") {
-        const { data, error } = await client.auth.signInWithPassword({ email: email.trim(), password });
+        const { data, error } = await finishAuthAction(client.auth.signInWithPassword({ email: email.trim(), password }));
         if (error) throw error;
         setUser(data.user);
         setPassword("");
       } else if (mode === "forgot") {
-        const { error } = await client.auth.resetPasswordForEmail(email.trim(), { redirectTo: `${window.location.origin}/account` });
+        const { error } = await finishAuthAction(client.auth.resetPasswordForEmail(email.trim(), { redirectTo: `${window.location.origin}/account` }));
         if (error) throw error;
         setMessage("If this email has an account, a password reset link will arrive in its inbox.");
       } else {
-        const { error } = await client.auth.updateUser({ password });
+        const { error } = await finishAuthAction(client.auth.updateUser({ password }));
         if (error) throw error;
         setMessage("Your password was updated.");
         setPassword(""); setConfirmPassword(""); setMode("sign-in");
       }
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Something went wrong. Please try again.");
+      setErrorMessage(accountError(error));
     } finally {
       setBusy(false);
     }
@@ -89,10 +114,12 @@ export default function AccountPanel() {
     const client = getAuthClient();
     if (!client) return;
     setBusy(true); setErrorMessage(""); setMessage("");
-    const { error } = await client.auth.signOut();
-    if (error) setErrorMessage(error.message);
-    else { setUser(null); changeMode("sign-in"); setMessage("You have signed out."); }
-    setBusy(false);
+    try {
+      const { error } = await finishAuthAction(client.auth.signOut());
+      if (error) setErrorMessage(accountError(error));
+      else { setUser(null); changeMode("sign-in"); setMessage("You have signed out."); }
+    } catch (error) { setErrorMessage(accountError(error)); }
+    finally { setBusy(false); }
   }
 
   async function resendConfirmation() {
@@ -103,14 +130,16 @@ export default function AccountPanel() {
       return;
     }
     setBusy(true); setMessage(""); setErrorMessage("");
-    const { error } = await client.auth.resend({
-      type: "signup",
-      email: email.trim(),
-      options: { emailRedirectTo: `${window.location.origin}/account` },
-    });
-    if (error) setErrorMessage(error.message);
-    else setMessage("If this email is awaiting confirmation, a new link will arrive in its inbox.");
-    setBusy(false);
+    try {
+      const { error } = await finishAuthAction(client.auth.resend({
+        type: "signup",
+        email: email.trim(),
+        options: { emailRedirectTo: `${window.location.origin}/account` },
+      }));
+      if (error) setErrorMessage(accountError(error));
+      else setMessage("If this email is awaiting confirmation, a new link will arrive in its inbox.");
+    } catch (error) { setErrorMessage(accountError(error)); }
+    finally { setBusy(false); }
   }
 
   if (!authConfigured) return <div className="account-card account-unavailable"><p className="eyebrow">ACCOUNT SETUP</p><h2>Coming soon.</h2><p>Email accounts will be available after the authentication service is connected. Typing tests and lessons still work without an account.</p><a className="button primary" href="/#practice">Practice without an account →</a></div>;
