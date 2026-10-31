@@ -2,12 +2,11 @@ import type { Metadata } from "next";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import AccountPanel from "@/components/AccountPanel";
-import { authConfigured } from "@/lib/auth-config";
 
 export const metadata: Metadata = {
   title: "Typencil Account | Sign In or Create an Account",
   description: "Create a free Typencil account with email, sign in, or reset your password. Typing practice remains available without an account.",
-  robots: authConfigured ? undefined : { index: false, follow: true },
+  robots: { index: false, follow: true },
 };
 
 export default function AccountPage() {

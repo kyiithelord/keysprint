@@ -7,6 +7,7 @@ import ProgressDashboard from "@/components/ProgressDashboard";
 export const metadata: Metadata = {
   title: "Your Typing Progress | Typencil",
   description: "Review recent typing tests, compare net WPM and accuracy, and track your personal best across devices when signed in.",
+  robots: { index: false, follow: true },
 };
 
 export default function ProgressPage() {

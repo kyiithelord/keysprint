@@ -5,8 +5,9 @@ import ProgressSync from "@/components/ProgressSync";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Typencil — Free Typing Speed Test",
-  description: "Practice your typing rhythm with free timed tests, instant WPM and accuracy feedback, and optional progress sync across devices.",
+  metadataBase: new URL("https://typencil.vercel.app"),
+  title: "Free Typing Test — Check WPM and Accuracy | Typencil",
+  description: "Take a free typing test with 15, 30, 60, or 120 second rounds. See your WPM and accuracy instantly, then practice with typing lessons and games.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
