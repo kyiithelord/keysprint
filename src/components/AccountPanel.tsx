@@ -12,7 +12,6 @@ type Mode = "sign-in" | "sign-up" | "forgot" | "reset";
 export default function AccountPanel() {
   const [mode, setMode] = useState<Mode>("sign-in");
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,25 +28,18 @@ export default function AccountPanel() {
 
   useEffect(() => {
     const client = getAuthClient();
-    if (!client) { setLoading(false); return; }
+    if (!client) return;
     let mounted = true;
     const hash = new URLSearchParams(window.location.hash.slice(1));
     if (hash.get("type") === "recovery") setMode("reset");
     if (hash.get("error_description")) setErrorMessage(hash.get("error_description") || "The sign-in link could not be used.");
-    const timeout = window.setTimeout(() => {
-      if (!mounted) return;
-      setLoading(false);
-      setErrorMessage(current => current || "Account check is taking longer than expected. You can still sign in below.");
-    }, 8000);
     const { data: { subscription } } = client.auth.onAuthStateChange((event, session) => {
       if (!mounted) return;
-      window.clearTimeout(timeout);
       setUser(session?.user ?? null);
       if (event === "PASSWORD_RECOVERY") setMode("reset");
       if (session?.user) setErrorMessage("");
-      setLoading(false);
     });
-    return () => { mounted = false; window.clearTimeout(timeout); subscription.unsubscribe(); };
+    return () => { mounted = false; subscription.unsubscribe(); };
   }, []);
 
   function changeMode(next: Mode) {
@@ -123,12 +115,12 @@ export default function AccountPanel() {
 
   if (!authConfigured) return <div className="account-card account-unavailable"><p className="eyebrow">ACCOUNT SETUP</p><h2>Coming soon.</h2><p>Email accounts will be available after the authentication service is connected. Typing tests and lessons still work without an account.</p><a className="button primary" href="/#practice">Practice without an account →</a></div>;
 
-  if (!loading && user && mode !== "reset") return <ProfileDashboard user={user} syncState={syncState} onSignOut={() => void signOut()} busy={busy} />;
+  if (user && mode !== "reset") return <ProfileDashboard user={user} syncState={syncState} onSignOut={() => void signOut()} busy={busy} />;
 
   return <div className="account-card">
     {message && <p className="account-message" role="status">{message}</p>}
     {errorMessage && <p className="account-error" role="alert">{errorMessage}</p>}
-    {loading ? <p role="status">Checking your account…</p> : <>
+    <>
       {mode === "sign-in" || mode === "sign-up" ? <div className="account-tabs" role="tablist" aria-label="Account action"><button type="button" role="tab" aria-selected={mode === "sign-in"} className={mode === "sign-in" ? "active" : ""} onClick={() => changeMode("sign-in")}>Sign in</button><button type="button" role="tab" aria-selected={mode === "sign-up"} className={mode === "sign-up" ? "active" : ""} onClick={() => changeMode("sign-up")}>Create account</button></div> : <button className="account-back" type="button" onClick={() => changeMode("sign-in")}>← Back to sign in</button>}
       <h2>{mode === "sign-up" ? "Create your account." : mode === "forgot" ? "Reset your password." : mode === "reset" ? "Choose a new password." : "Welcome back."}</h2>
       <p className="account-subtitle">{mode === "sign-up" ? "Use your email to make a free Typencil account." : mode === "forgot" ? "Enter your account email and we will send a reset link." : mode === "reset" ? "Enter a new password for your account." : "Sign in to your Typencil account."}</p>
@@ -141,6 +133,6 @@ export default function AccountPanel() {
       </form>
       {(mode === "sign-in" || mode === "sign-up") && <button className="account-forgot" type="button" onClick={resendConfirmation} disabled={busy}>Resend confirmation email</button>}
       <p className="account-small">Creating an account is optional. Sign in to sync your typing results, lessons, game bests, and daily challenges across devices.</p>
-    </>}
+    </>
   </div>;
 }
